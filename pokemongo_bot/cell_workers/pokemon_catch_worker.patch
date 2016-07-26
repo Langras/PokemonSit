@@ -1,0 +1,48 @@
+diff --git a/pokemongo_bot/cell_workers/pokemon_catch_worker.py b/pokemongo_bot/cell_workers/pokemon_catch_worker.py
+index 0ff2b3e..496c410 100644
+--- a/pokemongo_bot/cell_workers/pokemon_catch_worker.py
++++ b/pokemongo_bot/cell_workers/pokemon_catch_worker.py
+@@ -58,6 +58,7 @@ class PokemonCatchWorker(object):
+                                 # TODO: Begin searching for pokestops.
+                                 break
+                             print('[x] Using {}...'.format(self.item_list[str(pokeball)]))
++                            id_list1 = self.count_pokemon_inventory()
+                             self.api.catch_pokemon(encounter_id = encounter_id,
+                                 pokeball = pokeball,
+                                 normalized_reticle_size = 1.950,
+@@ -83,7 +84,8 @@ class PokemonCatchWorker(object):
+                                         print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
+                                         id_list2 = self.count_pokemon_inventory()
+                                         # Transfering Pokemon
+-                                        self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
++                                        pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
++                                        self.transfer_pokemon(pokemon_to_transfer)
+                                         print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
+                                     else:
+                                         print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
+@@ -113,7 +115,7 @@ class PokemonCatchWorker(object):
+
+     def _execute_pokemon_transfer(self, value, pokemon):
+        if 'cp' in pokemon and pokemon['cp'] < value:
+-               self.api.release_pokemon(pokemon_id=pokemon['id'])
++               self.api.release_pokemon(pokemon_id=pokemon['pokemon_id'])
+                response_dict = self.api.call()
+
+     def transfer_pokemon(self, pid):
+@@ -134,11 +136,13 @@ class PokemonCatchWorker(object):
+         else:
+             for item in response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']:
+                 try:
+-                    reduce(dict.__getitem__, ["inventory_item_data", "pokemon"], item)
++                    reduce(dict.__getitem__, ["inventory_item_data", "pokemon_data"], item)
+                 except KeyError:
+                     pass
+                 else:
+-                    pokemon = item['inventory_item_data']['pokemon']
+-                    id_list.append(pokemon['id'])
++                    pokemon = item['inventory_item_data']['pokemon_data']
++                    if pokemon.get('is_egg', False):
++                        continue
++                    id_list.append(pokemon['pokemon_id'])
+
+         return id_list

@@ -1,0 +1,27 @@
+/* Digital style */
+.bot-item .material-icons {
+    line-height: 21px;
+    float: left;
+}
+.secondary-content {
+    color: #039be5;
+    padding-right: 10px;
+}
+.bot-starting
+{
+    color: #EF6C00;
+}
+.bot-status {
+    padding-right: 5px;
+    text-transform: uppercase;
+}
+.row {
+    margin: 0;
+    padding: 0;
+}
+.row .col {
+    padding: 0;
+}
+nav .brand-logo {
+    padding-left: 20px;
+}

@@ -1,0 +1,35 @@
+***************
+*** 83,89 ****
+                                          print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
+                                          id_list2 = self.count_pokemon_inventory()
+                                          # Transfering Pokemon
+-                                         self.transfer_pokemon(list(Set(id_list2) - Set(id_list1)))
+                                          print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
+                                      else:
+                                          print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
+--- 84,91 ----
+                                          print_green('[x] Captured {}! [CP {}] - exchanging for candy'.format(pokemon_name, cp))
+                                          id_list2 = self.count_pokemon_inventory()
+                                          # Transfering Pokemon
++                                         pokemon_to_transfer = list(Set(id_list2) - Set(id_list1))
++                                         self.transfer_pokemon(pokemon_to_transfer)
+                                          print_green('[#] {} has been exchanged for candy!'.format(pokemon_name))
+                                      else:
+                                          print_green('[x] Captured {}! [CP {}]'.format(pokemon_name, cp))
+***************
+*** 113,119 ****
+  
+      def _execute_pokemon_transfer(self, value, pokemon):
+         if 'cp' in pokemon and pokemon['cp'] < value:
+-                self.api.release_pokemon(pokemon_id=pokemon['id'])
+                 response_dict = self.api.call()
+  
+      def transfer_pokemon(self, pid):
+--- 115,121 ----
+  
+      def _execute_pokemon_transfer(self, value, pokemon):
+         if 'cp' in pokemon and pokemon['cp'] < value:
++                self.api.release_pokemon(pokemon_id=pokemon['pokemon_id'])
+                 response_dict = self.api.call()
+  
+      def transfer_pokemon(self, pid):
