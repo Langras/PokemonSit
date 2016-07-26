@@ -117,4 +117,5 @@ data/catch-ignore.yml
 web/userdata.js
 location.json
 config-*.json
+ps-config.json
 config/ps-config.json
