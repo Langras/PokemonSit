@@ -103,7 +103,7 @@ function initMap() {
   document.getElementById('switchPan').checked = userFollow;
   document.getElementById('switchZoom').checked = userZoom;
   document.getElementById('imageType').checked = (imageExt != '.png');
-  document.getElementById('strokeOn').checked = false;
+  document.getElementById('strokeOn').checked = true;
   placeTrainer();
   addCatchable();
   log({message:'Data Loaded!'});
@@ -245,7 +245,7 @@ var trainerFunc = function(data, user_index) {
         path: pathcoords[users[user_index]],
         geodisc: true,
         strokeColor: '#FF0000',
-        strokeOpacity: 0.0,
+        strokeOpacity: 1.0,
         strokeWeight: 2
       });
     } else {

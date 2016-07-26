@@ -22,24 +22,24 @@ app.use('/',express.static(__dirname + '/view'));
 
 console.log("# Pokemon Sit v0.1 \n");
 console.log("# App running at localhost:3000");
-jsonfile.readFile(__dirname+'/ps-config.json',function(err,data){
-console.log("# Loaded PokemonSit config");
-bots = data;
-console.log("# Found "+bots.length+" bots");
-loadConfigs();
+loadPSConfig();
 
-
-});
-
+function loadPSConfig(){
+  jsonfile.readFile(__dirname+'/config/ps-config.json',function(err,data){
+    console.log("# Loaded PokemonSit config");
+    bots = data;
+    console.log("# Found "+bots.length+" bots");
+    loadConfigs();
+  });
+}
 
 function loadConfigs(){
-for( var i = 0; i < bots.length; i++ )
-{
-  var config_name = './config-'+bots[i]+'.json';
-  configs[bots[i]] = require(config_name);
-  console.log("# Found bot config for user "+bots[i]);
-}
-updateMapUsers();
+  for( var i = 0; i < bots.length; i++ )
+  {
+    var config_name = './config/config-'+bots[i]+'.json';
+    configs[bots[i]] = require(config_name);
+    console.log("# Found bot config for user "+bots[i]);
+  }
 }
 
 
@@ -50,7 +50,7 @@ app.get('/', function (req, res) {
 
 app.post('/startbot/:name',function (req, res){
   var bot_name = req.params.name;
-  var config_name = "config-"+bot_name+".json";
+  var config_name = "config/config-"+bot_name+".json";
   running_bots[bot_name] = new PythonShell('pokecli.py',{args:["-cf",config_name]});
   console.log("# Started bot "+bot_name);
   running_bots[bot_name].on('message', function (log_message) {
@@ -91,8 +91,8 @@ app.post('/stopbot/:name',function (req, res){
 
 app.get("/getconfig/:name",function (req,res){
   var bot_name = req.params.name;
-  delete require.cache[require.resolve("./config-"+bot_name+".json")];
-  var l_config = require("./config-"+bot_name+".json");
+  delete require.cache[require.resolve("./config/config-"+bot_name+".json")];
+  var l_config = require("./config/config-"+bot_name+".json");
 
   res.send(l_config);
 });
@@ -104,17 +104,19 @@ app.get("/getbots",function (req,res){
 app.post("/deletebot/:name",function (req,res){
   var bot_name = req.params.name;
   bots.splice(bots.indexOf(bot_name),1);
-  fs.unlink(__dirname+"/config-"+bot_name+".json");
-  jsonfile.writeFileSync(__dirname+'/ps-config.json',bots);
+  fs.unlink(__dirname+"/config/config-"+bot_name+".json");
+  jsonfile.writeFileSync(__dirname+'/config/ps-config.json',bots);
   console.log("# Deleted bot "+bot_name);
+  updateMapUsers();
 });
 
 function updateMapUsers(){
+  loadConfigs();
   var text = 'var users = '+JSON.stringify(bots)+';\n\
 var userZoom = true;\n\
 var userFollow = true;\n\
 var imageExt = ".png";\n\
-var gMapsAPIKey = "'+configs[bots[0]].gmapkey+'";'
+var gMapsAPIKey = "'+configs[bots[0]].gmapkey +'";\n'
 fs.writeFile(__dirname+"/web/userdata.js", text, function(err) {
         if(err) {
             return console.log(err);
@@ -131,9 +133,8 @@ app.post("/config/:name",function (req, res){
   if(bots.indexOf(bot_name) < 0)
   {
     bots.push(bot_name);
-    jsonfile.writeFileSync(__dirname+'/ps-config.json',bots);
+    jsonfile.writeFileSync(__dirname+'/config/ps-config.json',bots);
     console.log("# Creating new bot "+bot_name);
-    updateMapUsers();
   }
     var config_l = req.body;
     var text ="{";
@@ -152,7 +153,7 @@ app.post("/config/:name",function (req, res){
     }
     text += "\n}";
       
-    fs.writeFile(__dirname+"/config-"+bot_name+".json", text, function(err) {
+    fs.writeFile(__dirname+"/config/config-"+bot_name+".json", text, function(err) {
         if(err) {
             return console.log(err);
         }
