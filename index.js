@@ -51,6 +51,10 @@ app.get('/', function (req, res) {
 app.post('/startbot/:name',function (req, res){
   var bot_name = req.params.name;
   var config_name = "config/config-"+bot_name+".json";
+  if(running_bots[bot_name])
+  {
+    return;
+  }
   running_bots[bot_name] = new PythonShell('pokecli.py',{args:["-cf",config_name]});
   console.log("# Started bot "+bot_name);
   running_bots[bot_name].on('message', function (log_message) {
