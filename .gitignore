@@ -118,3 +118,4 @@ release_config.json
 web/userdata.js
 location.json
 config-*.json
+config/*

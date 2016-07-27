@@ -60,7 +60,7 @@ app.post('/startbot/:name',function (req, res){
     socket.emit('bot-status', {status:"running", bot: bot_name });
 
   running_bots[bot_name].end(function (err) {
-    console.log(err);
+    if (err) console.log(err);
     if(err){
       socket.emit('bot-status', { status:"crashed",bot: bot_name });
       running_bots[bot_name] = undefined;
@@ -84,6 +84,7 @@ app.post('/stopbot/:name',function (req, res){
   socket.emit('bot-status', { status:"off",bot: bot_name });
   if(running_bots[bot_name]){
     running_bots[bot_name].childProcess.kill('SIGINT');
+    running_bots[bot_name] = undefined;
   }
   console.log("# Stoped bot "+bot_name); 
 

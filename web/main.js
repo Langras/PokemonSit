@@ -470,10 +470,6 @@ function buildTrainerList() {
   {
     out += '<li><div class="collapsible-header bot-name">'+users[i]+
            '</div><div class="collapsible-body"><ul user_id="'+i+'">\
-           <li><a class="indigo waves-effect waves-light btn tInfo">Info</a></li><br>\
-           <li><a class="indigo waves-effect waves-light btn tItems">Items</a></li><br>\
-           <li><a class="indigo waves-effect waves-light btn tPokemon">Pokemon</a></li><br>\
-           <li><a class="indigo waves-effect waves-light btn tPokedex">Pokedex</a></li><br>\
            <li><a class="indigo waves-effect waves-light btn tFind" onClick="findBot('+i+')">Find</a></li>\
            </ul> \
            </div>\
@@ -744,12 +740,5 @@ function sortAndShowPokedex(sortOn, user_id) {
 
 // Adds events to log panel and if it's closed sends Toast
 function log( log_object ){
-  var currentDate = new Date();
-  var time = ('0' + currentDate.getHours()).slice(-2) + ':'
-             + ('0' + (currentDate.getMinutes())).slice(-2);
-  $("#logs-panel .card-content").append("<div class='log-item'>\
-  <span class='log-date'>"+time+"</span><p class='"+log_object.color+"'>"+log_object.message+"</p></div>");
-  if(!$('#logs-panel').is(":visible")){
     Materialize.toast(log_object.message, 3000);
-  }
 }

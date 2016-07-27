@@ -25,3 +25,23 @@
 nav .brand-logo {
     padding-left: 20px;
 }
+#modal-info img {
+    height: 100px;
+}
+.log-text {
+    height: 80vh;
+    overflow-y: scroll;
+}
+.bot-list-container {
+    box-sizing: border-box;
+    padding: 10px !important;
+}
+.logs-container {
+    border-left: 1px solid #ddd;
+}
+.logs-container h4 {
+    padding-left: 10px;
+}
+ul.tabs {
+    border-bottom: 1px solid #ddd;
+}
