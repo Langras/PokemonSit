@@ -1,4 +1,4 @@
-![screenshot](http://i.imgur.com/G8BfpKb.png)
+![screenshot](http://i.imgur.com/dATFEyr.png)
 # PokemonSit
 I wanna be the very best,  
 But I don't wanna go  
