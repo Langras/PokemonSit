@@ -9,6 +9,8 @@ var jsonfile = require('jsonfile');
 var bots = [];
 var io = require('socket.io').listen(app.listen(3000));
 var socket;
+var pokemonArray = require('./web/pokemondata.json');
+var logs = [];
 
 var running_bots = {};
 
@@ -49,6 +51,7 @@ app.get('/', function (req, res) {
 });
 
 app.post('/startbot/:name',function (req, res){
+  console.log("# Got signal to start bot");
   var bot_name = req.params.name;
   var config_name = "config/config-"+bot_name+".json";
   if(running_bots[bot_name])
@@ -58,13 +61,64 @@ app.post('/startbot/:name',function (req, res){
   running_bots[bot_name] = new PythonShell('pokecli.py',{args:["-cf",config_name]});
   console.log("# Started bot "+bot_name);
   running_bots[bot_name].on('message', function (log_message) {
-    socket.emit('log-message',{bot:bot_name,message:log_message});
+            var out ={};
+            var message = log_message;
+            out.bot = bot_name;
+            out.message = message;
+            out.color = "#000080";
+            out.date = new Date();
+            if(message.search("Configuration initialized")>-1)
+            {
+                out.message = "Loaded configuration";
+                out.color = "#008000";
+            }
+            else if(message.search("Starting")>-1)
+            {
+                out.message = "Starting bot";
+                out.color = "#008000";
+            }
+            else if(message.search("Walking")>-1)
+            {
+                out.message = "Walking...";
+            }
+            else if(message.search("Need to move closer to Pokestop")>-1)
+            {
+                out.message = "Walking to Pokestop";
+            }
+            else if(message.search("Spinning")>-1)
+            {
+                out.message = "Spinning pokestop";
+                out.color = "#008000";
+            }
+            else if(message.search("[+]")>-1)
+            {
+                out.message = message.substring(message.search("[+]")+2);
+                out.color = "#008000";
+            }
+            else if(message.search("Captured")>-1 && message.search("IV")>-1)
+            {
+                var pokemon_name = message.substring(message.search("Captured")).split(" ")[1].slice(0,-1);
+                var pokemon_object = pokemonArray.find(function(pokemon){return pokemon.Name == pokemon_name});
+                out.message = "<img src='map/image/pokemon/"+pokemon_object.Number+".png' height='50' /><span class='message-captured'>Captrured pokemon "+pokemon_name+"!</span>";
+                out.color = "#008000";
+            }
+            else if(message.search("Inventory is full")>-1)
+            {
+                out.message = "Inventory is full, switching to catch mode";
+                out.color = "#008080";
+            }
+            else{
+                return;
+            }
+            logs.push(out);
+    socket.emit('log-message',out);
   });
   if(socket)
     socket.emit('bot-status', {status:"running", bot: bot_name });
 
   running_bots[bot_name].end(function (err) {
     if (err) console.log(err);
+    socket.emit('log-message',{bot:bot_name,message:"Bot stopped",color: "#80000",date: new Date()});
     if(err){
       socket.emit('bot-status', { status:"crashed",bot: bot_name });
       running_bots[bot_name] = undefined;
@@ -81,10 +135,15 @@ io.sockets.on('connection', function (local_socket) {
       if(running_bots[bots[i]]!=undefined)
         socket.emit('bot-status', { status:"RUNNING",bot: bots[i] }); 
     }
+    for(var i = 0; i < logs.length; i++)
+    {
+        socket.emit('log-message',logs[i]);
+    }
 });
 
 app.post('/stopbot/:name',function (req, res){
   var bot_name = req.params.name;
+  console.log("# Got signal to stop bot");
   socket.emit('bot-status', { status:"off",bot: bot_name });
   if(running_bots[bot_name]){
     running_bots[bot_name].childProcess.kill('SIGINT');

@@ -75,7 +75,7 @@ app =
         });
 
         socket.on('log-message', function (data){
-            bots[data.bot].logs.push(data.message);
+            bots[data.bot].logs.push(data);
             app.fillLogs();
         });
         this.initBots();
@@ -123,6 +123,7 @@ app =
         $("body").on('click',".stop-bot",function(){
             var bot_name = $(this).closest('.bot-item').attr("data-bot-name");
             bots[bot_name].setStatus("Stopping");
+            console.log("Sending signal to stop bot!");
             $.post( "/stopbot/"+ bot_name);
         });
 
@@ -217,7 +218,15 @@ app =
     fillLogs: function() {
         $.each(bots,function(index,bot){
             var bot_name_id = index.replace(/[^A-Za-z0-9]/g, "");
-            $(".logs-tabs #"+bot_name_id).html(bot.logs.join("<br>"));
+            $(".logs-tabs #"+bot_name_id).html("");
+            for(var i = 1; i < bot.logs.length; i++)
+            {
+                var item = bot.logs[i];
+                var currentDate = new Date(item.date);
+                var time = ('0' + currentDate.getHours()).slice(-2) + ':' + ('0' + (currentDate.getMinutes())).slice(-2);
+                $(".logs-tabs #"+bot_name_id).append("<div style='color:"+item.color+"'><span class='log-date'>"+time+"</span>"+item.message+"</div>");   
+            }
+            
         });
     }
 };
