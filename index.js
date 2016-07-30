@@ -7,7 +7,7 @@ var bodyParser = require('body-parser')
 var fs = require('fs');
 var jsonfile = require('jsonfile');
 var bots = [];
-var io = require('socket.io').listen(app.listen(3000));
+var io = require('socket.io').listen(app.listen(process.env.PORT || 3000));
 var socket;
 var pokemonArray = require('./web/pokemondata.json');
 var logs = [];
@@ -23,7 +23,7 @@ app.use('/',express.static(__dirname + '/view'));
 
 
 console.log("# Pokemon Sit v0.1 \n");
-console.log("# App running at localhost:3000");
+console.log("# App running at localhost:"+process.env.PORT || 3000);
 loadPSConfig();
 
 function loadPSConfig(){
