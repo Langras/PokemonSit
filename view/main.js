@@ -60,11 +60,7 @@ app =
         var gthis = this;
         
 
-        socket = io.connect('http://localhost:3000', {
-        'reconnection': true,
-        'reconnectionDelay': 500,
-        'reconnectionAttempts': 10
-        });
+        socket = io.connect();
 
         loadJSON('map/pokemondata.json', function(data) {
             pokemonArray = data;
