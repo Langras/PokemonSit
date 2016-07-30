@@ -6,6 +6,25 @@ But I don't wanna go
 The fork of the fork of the ... Pokemon Go Bot.  
 Easy to use bot with web interface.
 
+### Installation Mac/Linux locally
+```
+$ git clone https://github.com/sniok/PokemonSit  
+$ cd PokemonSit 
+$ pip install -r requirements.txt
+$ npm install
+$ node index.js
+```
+or
+### Deploy on heroku
+ - Fork this repo
+ - Go to [Heroku website](https://dashboard.heroku.com/)
+ - Create new app
+ - Go to Deploy and connect your GitHub account
+ - Connect your fork
+ - Under Settings tab make sure you have nodejs and python Buildpacks
+ - Under Resources enable Dyno
+ - Deploy app
+
 
 ## Features
  * Pretty web interface
@@ -21,9 +40,6 @@ Easy to use bot with web interface.
  * Use superior ball types when necessary
  * When out of normal pokeballs, use the next type of ball unless there are less than 10 of that type, in which case switch to farm mode
 
-
-## Installation
-
 ### Requirements (click each one for install guide)
 
 - [Python 2.7.x](http://docs.python-guide.org/en/latest/starting/installation/)
@@ -38,33 +54,14 @@ Easy to use bot with web interface.
 - Windows: Download protobuf 3.0: [here](https://github.com/google/protobuf/releases/download/v3.0.0-beta-4/protoc-3.0.0-beta-4-win32.zip) and unzip `bin/protoc.exe` into a folder in your PATH.
 - Linux: `apt-get install python-protobuf`
 
-
-### Installation Mac/Linux
-```
-$ git clone -b master https://github.com/PokemonGoF/PokemonGo-Bot  
-$ cd PokemonGo-Bot  
-$ pip install -r requirements.txt
-$ npm install
-$ node index.js
-```
-After that open `localhost:3000`
-
-### Installation Windows
-
-Coming soon (maybe)
-
-### Google Maps API (in development)
-
-Google Maps API: a brief guide to your own key
-
-This project uses Google Maps. There's one map coupled with the project, but as it gets more popular we'll definitely hit the rate-limit making the map unusable. That said, here's how you can get your own and replace ours:
+### Google Maps API key
 
 1. Navigate to this [page](https://console.developers.google.com/flows/enableapi?apiid=maps_backend,geocoding_backend,directions_backend,distance_matrix_backend,elevation_backend,places_backend&keyType=CLIENT_SIDE&reusekey=true)
 2. Select 'Create a project' in the dropdown menu.
 3. Wait an eternity.
 4. Click 'Create' on the next page (optionally, fill out the info)
 5. Copy the API key that appears.
-6. After the code done, will update here how to replace.
+6. Paste it when creating bot
 
 ## FAQ
 
